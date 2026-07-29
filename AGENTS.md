@@ -18,6 +18,8 @@ PRD 문서 하나를 입력하면, 여러 sub agent가 단계별로 일해서
 ├── skills/
 │   ├── start/SKILL.md         🔒 공용 — 진입점. 단계 호출 순서를 정의
 │   ├── git/SKILL.md           🔒 공용 — 작업 저장용
+│   ├── penpot-design/         📦 스타터 — 저작 절차 + Plugin API 치트시트
+│   │                            개선·확장 자유. 이걸 키우는 것이 곧 순위다
 │   └── {내 단계용 skill}/      ✅ 자유 생성
 └── agents/
     └── stage-*.md             ← 단계별 sub agent. 담당자만 수정
@@ -56,4 +58,8 @@ docs/
 ## Penpot 저작 방법
 
 `use_figma` MCP 툴로 코드를 실행하고, 코드 안에서 `figma.*` API를 씁니다.
-(`penpot.*` 병행 가능) 상세: 스타터킷의 `penpot-api-cheatsheet`.
+(`penpot.*` 병행 가능)
+
+절차와 실증 스니펫은 레포에 들어 있습니다 — `.claude/skills/penpot-design/`
+(`SKILL.md` = 저작 절차·채점 축, `cheatsheet.md` = Plugin API 실증 코드).
+별도로 받을 것은 없습니다.
