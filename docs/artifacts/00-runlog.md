@@ -38,3 +38,16 @@
 - [결정] 화면 11개(P0 4 · P1 7 · P2 0) — 20개 미만이라 P2 컷 불필요, 근거 없는 화면(관심종목 검색/추가 전용 화면 등) 생성 안 함
 - [전문가 렌즈 자체 검수] "지우면 끊기는 유저스토리" 질문으로 11개 전부 검증, P2 강등 대상 없음
 - [END] 2026-08-01 산출물=docs/artifacts/04-userflow.md 작성 완료. 포지션 문장 1개 · 환원체크리스트 11행 · 화면인벤토리 11개(P0 4/P1 7/P2 0) · 플로우맵 4과업. GATE=PASS.
+
+## stage-4-userflow (v2 · 재실행 확장)
+- [START] 2026-08-01 16:00 재실행. 사유=(a) 3단계 SKIPPED 2건의 흡수를 문서에 명시적으로 남길 것 (b) 환원 규칙을 PRD §3·§5뿐 아니라 §4·§6 전 문장으로 확대 적용할 것. 입력=docs/PRD.md + docs/artifacts/02-persona.md(GATE PASS) + docs/artifacts/03-competitors.md(GATE PASS). 참조=01-research.md(포지션 근거 한정)
+- [소비자 검증] v1은 02·03을 "문제 없음"으로 통과시켰으나 재검사 결과 양쪽 모두 WARN 발견 → feedback 파일 2개 신규 작성. 02=W1 PRD §4-2 투자스타일 4종 중 '성장형' 대표 페르소나 부재(StyleSetting 선택지는 유지하되 화면 우선순위 미정의) · W2 강명숙 우려사항 후반부가 02 자체 `근거 부족` 표기. 03=W1 주문결과/실패 화면 벤치마크 0개 · W2 토스 발견 탭 내부 미확보 · W3 C4가 텍스트 인용뿐(OrderSheet 시각 레퍼런스 없음). BLOCK 0건, 재실행 요청 안 함
+- [결정] 포지션 문장 유지·보강 — 01-research 브랜드보이스(동네·이웃·가깝고·따뜻한) + 소구점 S1 verbatim을 근거로 명시. "낯선 종목 데이터 → 내가 가까이서 지켜보는 관심종목"
+- [결정] 환원 규칙 적용 범위 확대: v1은 §3·§5·§6만 훑어 11행이었으나, v2는 §4-1(정보 4종)·§4-2(스타일)·§4-3(테마 2질문)·§4 말미 지시문·§7까지 포함해 **21행**으로 확장. 화면 미생성 5건도 "해당없음+사유"로 처리(빈 행 0)
+- [결정] 규칙② 확대 적용 2건을 보수적 기본값으로 채택(R6, 리스크표 R-1/R-2에 기록) — (a) §6-3 "호재/악재와 그로 인해 움직인 종목의 **연결**"의 "연결"을 진입점으로 해석 → New/IssueDetail 생성 (b) §3-1 "관심 종목을 **모아두고**"의 담기 경로 → New/StockSearch 생성(§6 미명시라 P1)
+- [결정] 3단계 SKIPPED 2건 흡수 — ① 주문결과/실패는 New/OrderResult(성공) + New/OrderFail(잔고부족·장마감 2 variant)로 **분리 생성**(실패는 사유가 본문이라 성공 레이아웃의 상태 변형으로 안 담김). 근거=PRD §3-3·§5 원문 + 당근 권유체(사용자 비난 금지). ② 토스 발견 탭 내부 미확보는 New/Discover를 PRD §6-3 요소 6개만으로 독자 설계 + 과밀 회피용 전체보기 목적지 4개(ThemeList·ThemeDetail·EarningsCalendar·IssueDetail)로 분산. 04-userflow.md에 전용 인계 표로 명시. **4단계 시점 미해결 SKIPPED=0건**
+- [결정] 화면 18개(P0 4 · P1 10 · P2 4) — v1 11개 대비 +7. 20개 미만이라 P2 컷 미적용. 근거 못 댄 화면(계좌개설·포트폴리오·뉴스 전체피드·커뮤니티)은 생성 안 함
+- [전문가 렌즈 자체 검수] 18행 전부 "지우면 끊기는 유저스토리" 질문 통과 검사 → 답 못한 4개(ThemeList·EarningsCalendar·Watchlist-Dense·Watchlist-Digest)를 **P2로 강등**
+- [결정] 저신뢰 2건 GATE 절에 명시(화면은 생성, GATE 영향 없음) — OrderSheet의 "자산 대비 비중" 아이디어(근거=C4 텍스트 리서치뿐) · Discover 정보 위계(경쟁사 내부 미확보 상태 결정, 5단계 export_shape 재검증 권고)
+- [결정] 5·6단계 인계: 저작 순서 P0→P1→P2, 타임박스 부족 시 P2부터 컷. 상태/실패 화면은 shape.clone() 후 덮어쓰기 전제. RecommendReasonChip(추천 이유 한 줄)을 Discover·ThemeDetail 추천 카드의 필수 슬롯으로 컴포넌트 계약에 못박음
+- [END] 2026-08-01 16:05:48 산출물=docs/artifacts/04-userflow.md(전면 개정) + docs/artifacts/feedback/02-feedback.md(신규) + docs/artifacts/feedback/03-feedback.md(신규). 포지션 1문장 · 환원체크리스트 21행 · 화면 18개(P0 4/P1 10/P2 4) · 플로우맵 4과업 + 페르소나별 여정 3개 · 리스크표 R-1~R-5. Penpot/use_figma/MCP 미사용. GATE=PASS.
