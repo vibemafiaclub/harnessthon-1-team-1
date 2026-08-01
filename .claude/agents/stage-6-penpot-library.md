@@ -14,6 +14,8 @@ description: 작업 Page에 디자인 토큰을 적용한 공통 컴포넌트 �
 - `docs/artifacts/04-design-guide.md` — TOKENS 코드블록과 컴포넌트 스펙
 - `docs/artifacts/05-html-review.md` — 확정 사항 표
 - `docs/artifacts/02-existing-assets.md` — 폰트 가용성, 참조 복제본 구역 좌표
+- `docs/penpot-troubleshooting.md` — **막혔을 때 반드시 읽는다.** "안 된다"고 보고하기 전에
+  3절 폴백 사다리를 끝까지 내려간다
 - 인자: **작업 Page 이름**
 
 ## 출력 (이것만 쓴다)
@@ -42,8 +44,19 @@ penpot.openPage(p);
 
 ## 절차
 
-1. 입력 3개를 읽는다. 없으면 **즉시 중단하고 보고한다.**
+1. 입력을 읽는다. 없으면 **즉시 중단하고 보고한다.**
 2. `high_level_overview` 를 읽는다. 작업 Page를 게이트대로 고정한다.
+2-1. **preflight — 저작 전에 반드시 통과시킨다.**
+   작업 Page에 사각형 1개를 만들고 → `export_shape` 로 보이는지 확인 → 지운다.
+   ```js
+   const r = penpot.createRectangle();
+   r.x = PREFLIGHT_X; r.y = PREFLIGHT_Y; r.resize(100, 100);
+   r.fills = [{ fillColor: "#FF0000", fillOpacity: 1 }];
+   return { id: r.id, page: penpot.currentPage.name };
+   ```
+   **반환된 `page` 가 인자로 받은 작업 Page와 다르면 즉시 중단하고 보고한다.**
+   남의 Page에 그리고 있다는 뜻이다. preflight가 실패하면 그 뒤 작업은 전부 무의미하다 —
+   `docs/penpot-troubleshooting.md` 1절을 보고, 해결되지 않으면 저작을 시작하지 않는다.
 3. **폰트를 먼저 확정한다.** 04가 지정한 폰트가 서버에 실제로 있는지 다시 확인한다.
    없으면 **조용히 대체되므로** 여기서 잡지 않으면 끝까지 모른다.
    ```js
@@ -136,7 +149,7 @@ inst.findShapes().find(s => s.name === "Label").characters = "…";
 | 컴포넌트 | export 결과 | 재-export | 남은 문제 |
 |---|---|---|---|
 
-## 8단계로 넘기는 문제 (여기서 못 고친 것)
+## 10단계로 넘기는 문제 (여기서 못 고친 것)
 | 항목 | 발생 문제 | 시도한 대응 | 결과 |
 |---|---|---|---|
 ````
