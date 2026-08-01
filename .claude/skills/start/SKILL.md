@@ -43,6 +43,8 @@ description: PRD를 입력받아 단계별 sub agent를 순서대로 호출해 P
 ## 실행 순서
 
 0. **작업 Page 이름을 확보한다.** 없으면 묻고, 답 전엔 시작하지 않는다.
+   **기존 자산 Page 이름(선택 인자)도 함께 받는다** — 기본은 5a가 PRD 2절에서 파싱하고,
+   이 인자는 파싱 실패 시의 폴백이다 (5a에 그대로 전달한다).
    런로그 `docs/artifacts/00-runlog.md`에 런 시작을 기록한다.
 1. `stage-1-research` + `stage-3-competitors` + `stage-5a-tokens` **3개 병렬 호출**
    → `01`·`03`·`05a` 생성 확인
