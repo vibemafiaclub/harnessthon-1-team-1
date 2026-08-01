@@ -61,6 +61,10 @@
 - **`../harness-failure-modes.md`** — 단계별 실패 모드·무인(20~30분) 핸들링 정본.
   scaffold 시 각 stage agent 본문에 해당 단계 표 + 공통 런타임 규칙(R1~R8)을 그대로 넣는다.
   핵심: 런로그·타임박스·재시도 1회·전체 중단 금지·체크포인트 재개·질문 대신 보수적 기본값+기록
+- **`../harness-gates-and-review.md`** — 단계 게이트·전문가 리뷰 정본.
+  Penpot 접점 2곳 원칙(읽기=5a, 쓰기=5b·6 / 01~04는 md 전용·Penpot 금지),
+  게이트 G1~G7(산출물 끝 `## GATE` 절 → start가 PASS/PARTIAL/FAIL 분기),
+  피드백 2겹(소비자 검증 BLOCK/WARN + 전문가 렌즈 킬러 질문 자체 검수)
 
 ## 검증 계획
 
