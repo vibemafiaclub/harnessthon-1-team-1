@@ -15,6 +15,9 @@ description: 라이브러리 인스턴스로 PRD가 요구한 화면을 작업 P
 - `docs/artifacts/04-design-guide.md` — 토큰
 - `docs/artifacts/05-html-review.md` — "Penpot 저작에 넘기는 확정 사항" 표
 - `docs/artifacts/06-library.md` — 컴포넌트 compId, 저작 구역 좌표
+- `docs/design-copy-rules.md` — 화면에 들어갈 문안의 표기 규칙
+- `docs/penpot-troubleshooting.md` — **막혔을 때 반드시 읽는다.** 특히 4절(만들어졌는데 나쁠 때)과
+  5절(시간이 부족할 때 무엇을 버리는가)
 - 인자: **작업 Page 이름**
 
 ## 출력 (이것만 쓴다)
@@ -43,7 +46,7 @@ const fill = (hex, o = 1) => [{ fillColor: hex, fillOpacity: o }];
 
 ## 절차
 
-1. 입력 4개를 읽는다. 없으면 **즉시 중단하고 보고한다.** 특히 06의 compId 표가 없으면
+1. 입력을 읽는다. 없으면 **즉시 중단하고 보고한다.** 특히 06의 compId 표가 없으면
    인스턴스를 만들 수 없으므로 6단계로 되돌린다.
 2. **배치 계획을 먼저 세운다.** 06이 넘긴 빈 구역에서 시작한다.
    - 화면 간격: `x += screen.width + 200`, 흐름이 바뀌면 `y += screen.height + 300`
@@ -64,6 +67,9 @@ const fill = (hex, o = 1) => [{ fillColor: hex, fillOpacity: o }];
    ```
    **데이터가 다른 행은 인스턴스 재사용 + `characters`/penpot 형식 `fills` 오버라이드로 처리한다.**
 6. **콘텐츠는 05가 확정한 것을 쓴다.** 행 수도 05의 표를 따른다. 3행만 넣고 끝내지 않는다.
+   문안을 새로 지어내야 하면 **04 G절(말투)과 `docs/design-copy-rules.md`** 를 따른다.
+   화면을 넘기기 전에 **세어서 확인한다: 이모지 0 · `—` 0 · 문장 내 ` - ` 0 · 자리표시자 0.**
+   숫자는 반올림하지 않는다. 목록에 **칸을 넘칠 만큼 긴 값을 최소 1개** 넣어 말줄임을 검증한다.
    실제 사진이 필요하면 넣을 수 있다 (top-level await 가능):
    ```js
    const img = await penpot.uploadMediaUrl("cover", url);
@@ -79,7 +85,7 @@ const fill = (hex, o = 1) => [{ fillColor: hex, fillOpacity: o }];
    렌더링에서 사라질 때가 있다.
 8. **화면 간 프로토타입 연결**을 시도한다. (`figma.*` 미지원이면 `penpot.*` 로 대체를 시도한다.)
    연결이 지원되지 않으면 **억지로 우회하지 말고** 흐름 순서를 화면 이름·배치로 표현하고
-   그 사실을 8단계로 넘긴다.
+   그 사실을 10단계로 넘긴다.
 9. **레이아웃 마무리 — 전 화면 저작이 끝난 뒤 한 번에 돌린다.**
    ```js
    p.findShapes().filter(s => s.type === "text" && s.growType === "auto-height")
@@ -137,7 +143,7 @@ const fill = (hex, o = 1) => [{ fillColor: hex, fillOpacity: o }];
 - 최상위 프레임 규칙: {01에서 읽은 규칙}
 - 의미 없는 이름(`Frame N`) 잔존: {n}건 ← 0이어야 한다
 
-## 8단계로 넘기는 문제
+## 10단계로 넘기는 문제
 | 항목 | 발생 문제 | 영향 | 시도한 대응 | 결과 |
 |---|---|---|---|---|
 ````
