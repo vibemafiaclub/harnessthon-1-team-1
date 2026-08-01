@@ -14,9 +14,9 @@ description: 저작된 Penpot 화면을 제작자와 분리된 시선으로 채�
 ## 입력 (이것만 읽는다)
 
 - `docs/PRD.md` — 요구사항의 기준
-- `docs/artifacts/01-screens.md` — 요구 화면 목록
+- `docs/artifacts/01-screens.md` — 요구 화면 목록 + 상단 **포지션 문장** (A-3·A-4의 기준선)
 - `docs/artifacts/02-existing-assets.md` — 레퍼런스의 실측 시각 규칙
-- `docs/artifacts/04-design-guide.md` — 토큰·컴포넌트 스펙
+- `docs/artifacts/04-design-guide.md` — 토큰·컴포넌트 스펙 + G절 **카피 근거**(03 소구점 원장 인용)
 - `docs/design-copy-rules.md` — 카피·표기 규칙 (AI티 검사 기준)
 - Penpot 실제 화면 — **읽기 전용**
 - 인자: **작업 Page 이름**, `run-id`
@@ -88,6 +88,8 @@ description: 저작된 Penpot 화면을 제작자와 분리된 시선으로 채�
 | 5 | PRD의 핵심 주장이 **화면 구조 자체로** 드러난다. 무엇을 뺐는지도 설명된다 |
 
 **관찰 방법**: PRD 1절(배경)의 문제 정의를 읽고, 그 문제가 이 화면에서 실제로 해결되는지 본다.
+`01-screens.md` 상단에 **포지션 문장**이 있으면 그것을 기준선으로 삼는다 — 그 문장이 실제로
+화면 구조에 드러나는가, 아니면 문서에만 있고 화면은 경쟁사를 베낀 모양인가.
 
 ### A-4. 레퍼런스 서비스다움 (브랜드 진정성)
 
