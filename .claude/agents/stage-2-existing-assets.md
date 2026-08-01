@@ -1,0 +1,149 @@
+---
+name: stage-2-existing-assets
+description: 기존 디자인 Page를 읽기 전용으로 분석해 색·타이포·간격 규칙과 반복 UI 패턴을 뽑고, 참조용 사본을 작업 Page에 복제한다. docs/artifacts/02-existing-assets.md 를 만든다.
+---
+
+# 2단계 — 기존 자산 분석 · 원본 보존 · 화면별 복제
+
+> 담당자: TBD
+
+## 입력 (이것만 읽는다)
+
+- `docs/PRD.md` (기존 자산이 어느 Page에 있는지 적힌 절)
+- Penpot 현재 파일 — **기존 자산 Page는 읽기 전용**
+- 인자: **작업 Page 이름** (복제본을 놓을 곳)
+
+## 출력 (이것만 쓴다)
+
+- `docs/artifacts/02-existing-assets.md`
+- 작업 Page 안의 참조용 복제본 (`Ref/` 접두사)
+
+## 🔴 작업 Page 게이트 (건너뛰기 금지)
+
+1. **작업 Page 이름을 인자로 받지 못했으면 저작을 시작하지 않는다.** 사용자에게 묻고 답을 기다린다.
+2. **기본값으로 첫 Page를 쓰지 않는다.** 추측해서 고르지 않는다.
+3. `중간공유`·`최종제출` 은 공용 Page다. 여기서 처음부터 저작하지 않는다.
+4. 기존 자산 Page는 **읽기 전용이다. 어떤 노드도 수정·이동·삭제하지 않는다.**
+5. 읽기만 하는 동안에는 **Page를 전환하지 않는다.** 전환하면 다른 팀원이 보는 화면도 바뀐다.
+
+## 절차
+
+1. `docs/PRD.md` 의 기존 자산 절에서 **읽을 Page 이름**을 확인한다.
+   PRD에 여러 Page가 언급되고 그중 하나만 읽으라고 되어 있으면 **그 하나만** 읽는다.
+   Page 이름을 PRD에서 찾을 수 없으면 **중단하고 사용자에게 묻는다.**
+2. `high_level_overview` 를 먼저 읽는다. 그다음 `use_figma` 로 파일 구조를 확인한다.
+
+   ```js
+   const pages = penpot.currentFile.pages.map(p => ({ id: p.id, name: p.name }));
+   return pages;
+   ```
+
+3. 대상 Page를 **전환 없이** 읽는다.
+
+   ```js
+   const page = penpot.currentFile.pages.find(p => p.name === TARGET_PAGE);
+   const roots = page.findShapes().filter(s => s.parent && s.parent.id === page.root?.id);
+   return roots.map(s => ({ id: s.id, name: s.name, type: s.type, x: s.x, y: s.y, w: s.width, h: s.height }));
+   ```
+
+   위 접근이 실패하면 `page.findShapes()` 전체를 얕게 훑어 최상위 board만 추린다.
+   **읽기가 안 된다고 openPage 로 전환하지 않는다.** 실패하면 그대로 보고한다.
+4. 각 기존 화면을 `export_shape` 로 PNG 확인한다. 빈 이미지가 나오면 **한 번 재-export** 한다.
+   그래도 비면 "레이아웃 미안정"으로 기록한다.
+5. **시각 규칙을 값으로 뽑는다.** 눈대중 서술이 아니라 실제 노드 속성에서 읽는다.
+
+   ```js
+   // 색: fills / strokes 에서 실제 사용 빈도 집계
+   // 타이포: fontFamily / fontSize / fontWeight / lineHeight 조합별 빈도
+   // 간격: 형제 노드 간 gap, 부모 padding
+   // 라운드: borderRadius
+   ```
+
+   빈도 상위 값이 곧 기존 제품의 규칙이다. **빈도 표를 그대로 출력에 싣는다.**
+6. **폰트 가용성을 확인한다.** 기존 파일 폰트가 서버에 없으면 **에러 없이 조용히 대체**된다.
+
+   ```js
+   const fonts = penpot.fonts.all.map(f => f.name);
+   return { total: fonts.length, has: fonts.filter(n => USED_FONT_NAMES.includes(n)) };
+   ```
+
+   없는 폰트는 **대체 폰트 후보**까지 정해서 출력에 적는다.
+7. **반복 UI 패턴을 식별한다.** 두 곳 이상에서 같은 구조가 반복되면 컴포넌트 후보다.
+   후보마다: 이름(의미 기반) / 반복 횟수 / 구성 요소 / 가변 부분(텍스트·색·이미지) / 발견 위치.
+8. **참조용 복제.** 원본은 그대로 두고, 작업 Page에 사본을 만든다.
+
+   ```js
+   // 1) 별도 호출로 먼저 Page를 전환한다 (전환한 그 호출 안에서 새 Page 노드를 만지면 죽는다)
+   penpot.openPage(penpot.currentFile.pages.find(p => p.name === WORK_PAGE));
+   ```
+
+   ```js
+   // 2) 다음 호출에서 복제한다. 모든 스크립트 첫 줄에서 작업 Page를 다시 고정한다.
+   penpot.openPage(penpot.currentFile.pages.find(p => p.name === WORK_PAGE));
+   const src = /* 기존 Page의 board */;
+   const copy = src.clone();
+   copy.name = "Ref/" + src.name;
+   copy.x = REF_ZONE_X + i * (src.width + 120);
+   copy.y = REF_ZONE_Y;
+   return { id: copy.id, name: copy.name };
+   ```
+
+   `clone()` 이 Page를 건너뛰지 못하면 **복제를 포기하고** 4단계에서 찍은 PNG를 참조 자산으로
+   남긴 뒤, 출력에 "복제 불가 — PNG 참조" 로 기록한다. **원본을 옮기는 방식으로 우회하지 않는다.**
+9. 복제본은 작업 영역과 **겹치지 않는 좌표 구역**(예: y = -3000 대)에 몰아 둔다.
+   이후 단계가 여기에 그리지 않도록 출력에 그 구역 좌표를 명시한다.
+10. 출력 파일을 쓴다.
+
+## 출력 형식
+
+````markdown
+# 02 — 기존 자산 분석
+
+## 읽은 대상
+- 기존 자산 Page: `{이름}` (id: …) — 읽기 전용, 수정 없음
+- 작업 Page: `{이름}` (id: …)
+- 참조 복제본 구역: x {…} ~ {…}, y {…} — **이 구역에는 신규 화면을 그리지 않는다**
+
+## 기존 화면 인벤토리
+
+| # | 화면(board) 이름 | id | 크기 | 역할 | PNG 확인 |
+|---|---|---|---|---|---|
+
+## 도출한 시각 규칙 (빈도 기반)
+
+### 색
+| HEX | 사용 횟수 | 쓰인 곳 | 추정 역할 |
+|---|---|---|---|
+
+### 타이포
+| fontFamily | size | weight | lineHeight | 사용 횟수 | 추정 역할 |
+|---|---|---|---|---|---|
+
+### 간격 / 라운드 / 그림자
+| 값 | 종류 | 사용 횟수 |
+|---|---|---|
+
+### 폰트 가용성
+| 원본 폰트 | 서버 존재 | 대체 폰트 |
+|---|---|---|
+
+## 반복 UI 패턴 → 컴포넌트 후보
+
+| 후보 이름 | 반복 횟수 | 구성 요소 | 가변 부분 | 발견 위치 |
+|---|---|---|---|---|
+
+## 톤앤매너 요약 (3~5줄)
+신규 화면이 지켜야 할 것 / 정돈해야 할 것을 구분해서 적는다.
+
+## 복제 결과
+| 원본 | 사본 이름 | 사본 id | 결과 |
+|---|---|---|---|
+````
+
+## 금지
+
+- **기존 자산 Page 수정 금지.** 읽기만 한다.
+- 작업 Page 이름 없이 저작 시작 금지.
+- 눈대중으로 색·크기를 적지 않는다. **노드 속성에서 읽은 값만** 적는다.
+- 특정 PRD 전용 하드코딩 금지 — Page 이름·화면 이름은 전부 PRD/파일에서 읽는다.
+- 다른 단계의 출력 파일을 쓰지 않는다.
